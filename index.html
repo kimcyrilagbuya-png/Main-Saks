@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Saks</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="jquery-script.js" defer></script>
+</head>
+<body>
+
+<!-- LOGIN OVERLAY -->
+<div id="login-overlay" class="login-overlay">
+    <div class="login-box">
+        <div class="modal-logo">
+            <img src="jordan.png" alt="logo">
+            <span>SAKS</span>
+            <img src="jordan.png" alt="logo">
+        </div>
+        <div class="login-tabs">
+            <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Login</button>
+            <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Create Account</button>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <div id="login-form">
+            <h2>Welcome Back</h2>
+            <input type="text" id="login-username" placeholder="Username" autocomplete="off">
+            <input type="password" id="login-password" placeholder="Password">
+            <p id="login-error" class="error-msg" style="display:none;">Invalid username or password.</p>
+            <button class="confirm-btn" onclick="doLogin()">Login</button>
+        </div>
+
+        <!-- REGISTER FORM -->
+        <div id="register-form" style="display:none;">
+            <h2>Create Account</h2>
+            <input type="text" id="reg-username" placeholder="Choose a username" autocomplete="off">
+            <input type="password" id="reg-password" placeholder="Choose a password">
+            <input type="password" id="reg-confirm" placeholder="Confirm password">
+            <p id="reg-error" class="error-msg" style="display:none;"></p>
+            <p id="reg-success" class="success-msg" style="display:none;"></p>
+            <button class="confirm-btn" onclick="doRegister()">Create Account</button>
+        </div>
+    </div>
+</div>
+
+<!-- SITE WRAPPER (hidden until login) -->
+<div id="site-wrapper" style="display:none;">
+
+<header class="top-bar">
+    <!-- LOGO -->
+    <div class="logo" onclick="showHome()" style="cursor:pointer;">
+        <img src="jordan.png" alt="logo">
+        <span class="logo-text">SAKS</span>
+    </div>
+
+    <!-- BRAND NAV (sidebar moved to header) -->
+    <nav class="header-nav">
+        <div class="nav-item" id="nav-nike">
+            <img src="nike.jpg" alt="NIKE">
+            <div class="nav-dropdown" id="drop-nike">
+                <button onclick="showPage('nike-jordan')">Jordan</button>
+                <button onclick="showPage('nike-lifestyle')">Lifestyle</button>
+                <button onclick="showPage('nike-basketball')">Basketball</button>
+                <button onclick="showPage('nike-running')">Running</button>
+                <button onclick="showPage('nike-football')">Football</button>
+            </div>
+        </div>
+        <div class="nav-item" id="nav-puma">
+            <img src="puma.jpg" alt="PUMA">
+            <div class="nav-dropdown" id="drop-puma">
+                <button onclick="showPage('puma-running')">Running</button>
+                <button onclick="showPage('puma-sneakers')">Sneakers</button>
+                <button onclick="showPage('puma-basketball')">Basketball</button>
+            </div>
+        </div>
+        <div class="nav-item" id="nav-adidas">
+            <img src="adidas.jpg" alt="ADIDAS">
+            <div class="nav-dropdown" id="drop-adidas">
+                <button onclick="showPage('adidas-football')">Football</button>
+                <button onclick="showPage('adidas-running')">Running</button>
+                <button onclick="showPage('adidas-basketball')">Basketball</button>
+            </div>
+        </div>
+        <div class="nav-item" id="nav-nb">
+            <img src="nb.jpg" alt="nb">
+            <div class="nav-dropdown" id="drop-nb">
+                <button onclick="showPage('nb-lifestyle')">Lifestyle</button>
+                <button onclick="showPage('nb-running')">Running</button>
+                <button onclick="showPage('nb-basketball')">Basketball</button>
+                <button onclick="showPage('nb-football')">Football</button>
+            </div>
+        </div>
+        <div class="nav-item" id="nav-others">
+            <span>OTHERS</span>
+            <div class="nav-dropdown" id="drop-others">
+                <button onclick="showPage('others-bags')">Bags</button>
+                <button onclick="showPage('others-socks')">Socks</button>
+                <button onclick="showPage('others-headwear')">Headwear</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- RIGHT SIDE: about, contact, cart, search -->
+    <div class="header-right">
+        <div class="info">
+            <span onclick="openAbout()">about</span>
+            <span onclick="openContact()">contact</span>
+            <span onclick="doLogout()" class="logout-btn">logout</span>
+        </div>
+
+        <!-- CART ICON -->
+        <div class="cart-icon-wrap" onclick="openCart()">
+            <svg class="cart-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+            <span id="cart-count" class="cart-count" style="display:none;">0</span>
+        </div>
+
+        <!-- SEARCH BAR -->
+        <div class="search-bar">
+            <input
+                type="text"
+                id="search-input"
+                placeholder="what are you looking for?"
+                oninput="handleSearch()"
+                onfocus="showSearchDropdown()"
+                autocomplete="off"
+            >
+            <div id="search-dropdown" class="search-dropdown" style="display:none;"></div>
+        </div>
+    </div>
+</header>
+
+<!-- MAIN CONTENT (centered, no sidebar) -->
+<main class="content">
+
+    <!-- HOME -->
+    <div id="original-content">
+        <section class="product-card" onclick="openPage('top-selling')">
+            <h2>Top Selling</h2>
+            <img src="jordan.png" alt="Top Selling">
+        </section>
+        <section class="product-card" onclick="openPage('most-famous')">
+            <h2>Most Famous</h2>
+            <img src="jordan.png" alt="Most Famous">
+        </section>
+        <section class="product-card" onclick="openPage('newly-released')">
+            <h2>Newly Released</h2>
+            <img src="jordan.png" alt="New Release">
+        </section>
+    </div>
+
+
+    <!-- TOP SELLING -->
+    <div id="top-selling" class="page">
+        <button onclick="goBack()">← Back</button>
+        <h2>Top Selling Shoes</h2>
+        <div class="shoe-list">
+            <div class="shoe-card" id="card-Nike Pegasus">
+                <img src="Top Selling/Nike Pegasus.png" alt="Nike Pegasus" class="shoe-img" onclick="toggleCart(this,'Nike Pegasus','₱7k – ₱12k','Top Selling/Nike Pegasus.png')">
+                <div class="shoe-info"><h3>Nike Pegasus</h3><p class="description">Nike's most iconic running shoe. Built for everyday miles with a responsive foam sole and breathable upper that keeps you comfortable from start to finish.</p></div>
+                <div class="shoe-price">₱7k – ₱12k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-Jordan 1 85 Bred">
+                <img src="Top Selling/Jordan 1 '85 bred.png" alt="Jordan 1 85 Bred" class="shoe-img" onclick="toggleCart(this,'Jordan 1 85 Bred','₱27k – ₱32k','Top Selling/Jordan 1 \'85 bred.png')">
+                <div class="shoe-info"><h3>Jordan 1 '85 Bred</h3><p class="description">A faithful retro of the original 1985 silhouette in the classic black and red colorway. One of the most historically significant sneakers ever made.</p></div>
+                <div class="shoe-price">₱27k – ₱32k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-Jordan X Nigel Sylvester">
+                <img src="Top Selling/Jordan X Nigel Sylvester.png" alt="Jordan X Nigel Sylvester" class="shoe-img" onclick="toggleCart(this,'Jordan X Nigel Sylvester','₱13k – ₱16k','Top Selling/Jordan X Nigel Sylvester.png')">
+                <div class="shoe-info"><h3>Jordan X Nigel Sylvester "Better With Time"</h3><p class="description">A creative collaboration with pro BMX rider Nigel Sylvester. Features a worn, aged aesthetic that tells a story of time and authenticity.</p></div>
+                <div class="shoe-price">₱13k – ₱16k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-New Balance 2000">
+                <img src="Top Selling/New Balance 2000.png" alt="New Balance 2000" class="shoe-img" onclick="toggleCart(this,'New Balance 2000','₱7k – ₱10k','Top Selling/New Balance 2000.png')">
+                <div class="shoe-info"><h3>New Balance 2000</h3><p class="description">A bold lifestyle silhouette from New Balance with a chunky sole and premium materials. Perfect for those who want to stand out on the street.</p></div>
+                <div class="shoe-price">₱7k – ₱10k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-Jordan 5 Black Metallic Reimagined">
+                <img src="Top Selling/Jordan 5 black metallic reimagined.png" alt="Jordan 5 Black Metallic Reimagined" class="shoe-img" onclick="toggleCart(this,'Jordan 5 Black Metallic Reimagined','₱8k – ₱9k','Top Selling/Jordan 5 black metallic reimagined.png')">
+                <div class="shoe-info"><h3>Jordan 5 Black Metallic Reimagined</h3><p class="description">A modern take on the classic Jordan 5, dressed in sleek black with metallic silver accents. Clean, timeless, and endlessly wearable.</p></div>
+                <div class="shoe-price">₱8k – ₱9k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-Adidas Evo SL">
+                <img src="Top Selling/Adidas evo sl.png" alt="Adidas Evo SL" class="shoe-img" onclick="toggleCart(this,'Adidas Evo SL','₱8k – ₱9k','Top Selling/Adidas evo sl.png')">
+                <div class="shoe-info"><h3>Adidas Evo SL</h3><p class="description">A lightweight performance runner from Adidas designed for speed. Features a streamlined upper and energy-returning midsole for fast training days.</p></div>
+                <div class="shoe-price">₱8k – ₱9k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-Jordan 1 Union Chicago Shadow">
+                <img src="Top Selling/Jordan 1 union Chicago shadow.png" alt="Jordan 1 Union Chicago Shadow" class="shoe-img" onclick="toggleCart(this,'Jordan 1 Union Chicago Shadow','₱19k – ₱25k','Top Selling/Jordan 1 union Chicago shadow.png')">
+                <div class="shoe-info"><h3>Jordan 1 Union Chicago Shadow</h3><p class="description">A highly sought-after Union LA collaboration on the Jordan 1. The "Shadow" palette blends grey and black tones with premium suede overlays.</p></div>
+                <div class="shoe-price">₱19k – ₱25k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-Jordan 4 White Cements">
+                <img src="Top Selling/Jordan 4 white cements.png" alt="Jordan 4 White Cements" class="shoe-img" onclick="toggleCart(this,'Jordan 4 White Cements','₱13k – ₱15k','Top Selling/Jordan 4 white cements.png')">
+                <div class="shoe-info"><h3>Jordan 4 White Cements</h3><p class="description">One of the most celebrated Jordan 4 colorways. The crisp white leather with cement grey accents has been a grail since its original 1989 release.</p></div>
+                <div class="shoe-price">₱13k – ₱15k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-Jordan 5 Tokyo">
+                <img src="Top Selling/Jordan 5 Tokyo.png" alt="Jordan 5 Tokyo" class="shoe-img" onclick="toggleCart(this,'Jordan 5 Tokyo','₱11k – ₱18k','Top Selling/Jordan 5 Tokyo.png')">
+                <div class="shoe-info"><h3>Jordan 5 Tokyo</h3><p class="description">An exclusive Japan-market release with a dark, moody colorway inspired by Tokyo's urban energy. Highly limited and extremely collectible.</p></div>
+                <div class="shoe-price">₱11k – ₱18k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-Adidas Jellyfish">
+                <img src="Top Selling/Adidas jellyfish.png" alt="Adidas Jellyfish" class="shoe-img" onclick="toggleCart(this,'Adidas Jellyfish','₱14k – ₱17k','Top Selling/Adidas jellyfish.png')">
+                <div class="shoe-info"><h3>Adidas Jellyfish</h3><p class="description">A futuristic Adidas silhouette with a translucent, jelly-like upper that catches the light. A head-turning statement piece for the bold dresser.</p></div>
+                <div class="shoe-price">₱14k – ₱17k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-Jordan 4 Nigel Sylvester Brick by Brick">
+                <img src="Top Selling/Jordan 4 Nigel Sylvester brick by brick.png" alt="Jordan 4 Nigel Sylvester Brick by Brick" class="shoe-img" onclick="toggleCart(this,'Jordan 4 Nigel Sylvester Brick by Brick','₱22k – ₱36k','Top Selling/Jordan 4 Nigel Sylvester brick by brick.png')">
+                <div class="shoe-info"><h3>Jordan 4 Nigel Sylvester "Brick by Brick"</h3><p class="description">Another Nigel Sylvester masterpiece on the Jordan 4. Celebrates street culture and creativity with earthy tones and detailed construction-inspired design.</p></div>
+                <div class="shoe-price">₱22k – ₱36k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOST FAMOUS -->
+    <div id="most-famous" class="page">
+        <button onclick="goBack()">← Back</button>
+        <h2>Most Famous Shoes</h2>
+        <div class="shoe-list">
+            <div class="shoe-card" id="card-Nike Air Force 1">
+                <img src="Most Famous/Nike Air Force 1.png" alt="Nike Air Force 1" class="shoe-img" onclick="toggleCart(this,'Nike Air Force 1','₱6k – ₱8k','Most Famous/Nike Air Force 1.png')">
+                <div class="shoe-info"><h3>Nike Air Force 1</h3><p class="description">The all-time classic. First basketball shoe to use Nike Air cushioning, now a street style staple worn by everyone from athletes to musicians worldwide.</p></div>
+                <div class="shoe-price">₱6k – ₱8k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-Adidas Samba">
+                <img src="Most Famous/Adidas Samba.png" alt="Adidas Samba" class="shoe-img" onclick="toggleCart(this,'Adidas Samba','₱3k – ₱6k','Most Famous/Adidas Samba.png')">
+                <div class="shoe-info"><h3>Adidas Samba</h3><p class="description">Originally designed for indoor soccer in the 1950s, the Samba has transcended sports to become one of the most beloved lifestyle sneakers of all time.</p></div>
+                <div class="shoe-price">₱3k – ₱6k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-Air Jordan 1">
+                <img src="Most Famous/Air Jordan 1.png" alt="Air Jordan 1" class="shoe-img" onclick="toggleCart(this,'Air Jordan 1','₱13k – ₱14k','Most Famous/Air Jordan 1.png')">
+                <div class="shoe-info"><h3>Air Jordan 1</h3><p class="description">The shoe that started it all. Michael Jordan's first signature Nike, banned by the NBA, and now the most iconic sneaker in history. A cultural cornerstone.</p></div>
+                <div class="shoe-price">₱13k – ₱14k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-Adidas Gazelle">
+                <img src="Most Famous/Adidas Gazelle.png" alt="Adidas Gazelle" class="shoe-img" onclick="toggleCart(this,'Adidas Gazelle','₱7k – ₱9k','Most Famous/Adidas Gazelle.png')">
+                <div class="shoe-info"><h3>Adidas Gazelle</h3><p class="description">A slim, suede trainer from the 1960s that never goes out of style. Loved by football casuals, Britpop fans, and streetwear enthusiasts across generations.</p></div>
+                <div class="shoe-price">₱7k – ₱9k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-New Balance 9060">
+                <img src="Most Famous/New Balance 9060.png" alt="New Balance 9060" class="shoe-img" onclick="toggleCart(this,'New Balance 9060','₱7k – ₱10k','Most Famous/New Balance 9060.png')">
+                <div class="shoe-info"><h3>New Balance 9060</h3><p class="description">A premium dad-shoe silhouette with layered overlays and NB's signature ABZORB cushioning. A modern collector's item with serious street credibility.</p></div>
+                <div class="shoe-price">₱7k – ₱10k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-Nike Air Max 97">
+                <img src="Most Famous/Nike Air Max 97.png" alt="Nike Air Max 97" class="shoe-img" onclick="toggleCart(this,'Nike Air Max 97','₱5k – ₱10k','Most Famous/Nike Air Max 97.png')">
+                <div class="shoe-info"><h3>Nike Air Max 97</h3><p class="description">Inspired by Japanese bullet trains, the 97's full-length Air unit and rippling lines made it a futuristic icon when it dropped and a timeless one today.</p></div>
+                <div class="shoe-price">₱5k – ₱10k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-Adidas Stan Smith">
+                <img src="Most Famous/Adidas Stan Smith.png" alt="Adidas Stan Smith" class="shoe-img" onclick="toggleCart(this,'Adidas Stan Smith','₱5k – ₱7k','Most Famous/Adidas Stan Smith.png')">
+                <div class="shoe-info"><h3>Adidas Stan Smith</h3><p class="description">Named after tennis legend Stan Smith, this clean white leather court shoe is the best-selling sneaker in history. Simple, elegant, and universally flattering.</p></div>
+                <div class="shoe-price">₱5k – ₱7k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEWLY RELEASED -->
+    <div id="newly-released" class="page">
+        <button onclick="goBack()">← Back</button>
+        <h2>Newly Released Shoes</h2>
+        <div class="shoe-list">
+            <div class="shoe-card" id="card-Nike Total 90">
+                <img src="Newly Released/Nike total90.png" alt="Nike Total 90" class="shoe-img" onclick="toggleCart(this,'Nike Total 90','₱3k – ₱5k','Newly Released/Nike total90.png')">
+                <div class="shoe-info"><h3>Nike Total 90</h3><p class="description">A nostalgic reissue of Nike's early 2000s football boot turned lifestyle sneaker. Blends retro soccer heritage with fresh modern colorways for the street.</p></div>
+                <div class="shoe-price">₱3k – ₱5k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-Nike Air Max 95 OG">
+                <img src="Newly Released/Nike Air Max 95 OG.png" alt="Nike Air Max 95 OG" class="shoe-img" onclick="toggleCart(this,'Nike Air Max 95 OG','₱7k – ₱10k','Newly Released/Nike Air Max 95 OG.png')">
+                <div class="shoe-info"><h3>Nike Air Max 95 OG</h3><p class="description">A retro rerelease of the 1995 original with its layered neoprene upper and visible forefoot Air. One of Nike's most complex and celebrated designs ever.</p></div>
+                <div class="shoe-price">₱7k – ₱10k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-ABZORB 2000">
+                <img src="Newly Released/ABZORB 2000.png" alt="ABZORB 2000" class="shoe-img" onclick="toggleCart(this,'ABZORB 2000','₱9k – ₱10k','Newly Released/ABZORB 2000.png')">
+                <div class="shoe-info"><h3>ABZORB 2000</h3><p class="description">New Balance's latest lifestyle silhouette built on their premium ABZORB cushioning tech. A chunky, comfortable shoe with a bold futuristic profile.</p></div>
+                <div class="shoe-price">₱9k – ₱10k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-204L">
+                <img src="Newly Released/204L.png" alt="204L" class="shoe-img" onclick="toggleCart(this,'204L','₱6k – ₱9k','Newly Released/204L.png')">
+                <div class="shoe-info"><h3>204L</h3><p class="description">A sleek new runner with a minimalist profile and technical materials. Designed for the athlete who wants performance without sacrificing clean aesthetics.</p></div>
+                <div class="shoe-price">₱6k – ₱9k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-Deviate NITRO">
+                <img src="Newly Released/Deviate NITRO.png" alt="Deviate NITRO" class="shoe-img" onclick="toggleCart(this,'Deviate NITRO','₱6k – ₱7k','Newly Released/Deviate NITRO.png')">
+                <div class="shoe-info"><h3>Deviate NITRO</h3><p class="description">Puma's elite carbon-plated racing shoe built for personal bests. The NITRO foam delivers explosive energy return for serious runners chasing fast times.</p></div>
+                <div class="shoe-price">₱6k – ₱7k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-HALI 1 Smoke">
+                <img src="Newly Released/HALI 1 SMOKE.png" alt="HALI 1 Smoke" class="shoe-img" onclick="toggleCart(this,'HALI 1 Smoke','₱7k – ₱9k','Newly Released/HALI 1 SMOKE.png')">
+                <div class="shoe-info"><h3>HALI 1 Smoke</h3><p class="description">A fresh basketball signature with a smoky colorway and performance-tuned cushioning. Built for the court but styled for the street with its tonal grey palette.</p></div>
+                <div class="shoe-price">₱7k – ₱9k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-Cloudfoam Flex Lounge Rapidfit">
+                <img src="Newly Released/Cloudfoam flex lounge rapidfit.png" alt="Cloudfoam Flex Lounge Rapidfit" class="shoe-img" onclick="toggleCart(this,'Cloudfoam Flex Lounge Rapidfit','₱3k – ₱5k','Newly Released/Cloudfoam flex lounge rapidfit.png')">
+                <div class="shoe-info"><h3>Cloudfoam Flex Lounge Rapidfit</h3><p class="description">Adidas' easy slip-on lifestyle shoe with ultra-soft Cloudfoam cushioning. Made for maximum comfort and effortless style on lazy days and quick errands.</p></div>
+                <div class="shoe-price">₱3k – ₱5k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+            <div class="shoe-card" id="card-Barreda Lo">
+                <img src="Newly Released/BARREDA LO.png" alt="Barreda Lo" class="shoe-img" onclick="toggleCart(this,'Barreda Lo','₱3k – ₱6k','Newly Released/BARREDA LO.png')">
+                <div class="shoe-info"><h3>Barreda Lo</h3><p class="description">A low-profile court-inspired sneaker with clean lines and a versatile colourway. A fresh drop that pairs easily with almost any outfit in your rotation.</p></div>
+                <div class="shoe-price">₱3k – ₱6k</div>
+                <div class="cart-add-hint">Click image to add to cart</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NIKE PAGES -->
+    <div id="nike-jordan" class="page">
+        <button onclick="goBack()">← Back</button>
+        <h2>Nike – Jordan</h2>
+        <div class="shoe-list">
+            <div class="shoe-card" id="card-Air Jordan 1 Retro High OG"><img src="Nike/Jordan/Air Jordan 1 Retro High OG.png" alt="Air Jordan 1 Retro High OG" class="shoe-img" onclick="toggleCart(this,'Air Jordan 1 Retro High OG','₱13k – ₱14k','Nike/Jordan/Air Jordan 1 Retro High OG.png')"><div class="shoe-info"><h3>Air Jordan 1 Retro High OG</h3><p class="description">The shoe that started it all. Michael Jordan's first signature Nike, banned by the NBA, and now the most iconic sneaker in history. A cultural cornerstone that never goes out of style.</p></div><div class="shoe-price">₱13k – ₱14k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Air Jordan 11 Retro"><img src="Nike/Jordan/Air Jordan 11 Retro.png" alt="Air Jordan 11 Retro" class="shoe-img" onclick="toggleCart(this,'Air Jordan 11 Retro','₱15k – ₱20k','Nike/Jordan/Air Jordan 11 Retro.png')"><div class="shoe-info"><h3>Air Jordan 11 Retro</h3><p class="description">One of the most beloved Jordan silhouettes ever created. The patent leather mudguard and clean lines make the 11 a grail for sneakerheads and casual wearers alike.</p></div><div class="shoe-price">₱15k – ₱20k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Air Jordan 4 Retro"><img src="Nike/Jordan/Air Jordan 4 Retro.png" alt="Air Jordan 4 Retro" class="shoe-img" onclick="toggleCart(this,'Air Jordan 4 Retro','₱13k – ₱15k','Nike/Jordan/Air Jordan 4 Retro.png')"><div class="shoe-info"><h3>Air Jordan 4 Retro</h3><p class="description">First worn by MJ during his iconic free-throw dunk in 1989. The 4's mesh panels, visible Air unit, and lace wings make it one of the most recognizable Jordans of all time.</p></div><div class="shoe-price">₱13k – ₱15k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+        </div>
+    </div>
+    <div id="nike-lifestyle" class="page">
+        <button onclick="goBack()">← Back</button>
+        <h2>Nike – Lifestyle</h2>
+        <div class="shoe-list">
+            <div class="shoe-card" id="card-Nike Air Force 1 Low"><img src="Nike/Lifestyle/Nike Air Force 1 Low.png" alt="Nike Air Force 1 Low" class="shoe-img" onclick="toggleCart(this,'Nike Air Force 1 Low','₱6k – ₱8k','Nike/Lifestyle/Nike Air Force 1 Low.png')"><div class="shoe-info"><h3>Nike Air Force 1 Low</h3><p class="description">The all-time classic low-top that defined street culture. Clean, versatile, and endlessly wearable — the AF1 Low goes with everything and never goes out of style.</p></div><div class="shoe-price">₱6k – ₱8k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Nike Air Max 90"><img src="Nike/Lifestyle/Nike Air Max 90.png" alt="Nike Air Max 90" class="shoe-img" onclick="toggleCart(this,'Nike Air Max 90','₱7k – ₱10k','Nike/Lifestyle/Nike Air Max 90.png')"><div class="shoe-info"><h3>Nike Air Max 90</h3><p class="description">An icon since 1990. The Air Max 90's bold lines, visible heel Air unit, and chunky silhouette made it a streetwear staple that's just as relevant today as ever.</p></div><div class="shoe-price">₱7k – ₱10k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Nike Dunk Low"><img src="Nike/Lifestyle/Nike Dunk Low.png" alt="Nike Dunk Low" class="shoe-img" onclick="toggleCart(this,'Nike Dunk Low','₱7k – ₱9k','Nike/Lifestyle/Nike Dunk Low.png')"><div class="shoe-info"><h3>Nike Dunk Low</h3><p class="description">Originally a basketball shoe, the Dunk Low became a skate legend and then a global streetwear phenomenon. Bold colorways and a clean silhouette make every pair a statement.</p></div><div class="shoe-price">₱7k – ₱9k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+        </div>
+    </div>
+    <div id="nike-basketball" class="page">
+        <button onclick="goBack()">← Back</button>
+        <h2>Nike – Basketball</h2>
+        <div class="shoe-list">
+            <div class="shoe-card" id="card-LeBron 21"><img src="Nike/Basketball/LeBron 21.png" alt="LeBron 21" class="shoe-img" onclick="toggleCart(this,'LeBron 21','₱9k – ₱12k','Nike/Basketball/LeBron 21.png')"><div class="shoe-info"><h3>LeBron 21</h3><p class="description">The latest chapter in LeBron James' signature line. Built for dominance on the court with premium cushioning, lockdown support, and King James' signature power-forward style.</p></div><div class="shoe-price">₱9k – ₱12k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Nike KD 16"><img src="Nike/Basketball/Nike KD 16.png" alt="Nike KD 16" class="shoe-img" onclick="toggleCart(this,'Nike KD 16','₱8k – ₱11k','Nike/Basketball/Nike KD 16.png')"><div class="shoe-info"><h3>Nike KD 16</h3><p class="description">Kevin Durant's 16th signature shoe, engineered for elite scorers. Responsive cushioning and a low-profile fit give you the speed and precision KD is known for.</p></div><div class="shoe-price">₱8k – ₱11k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Nike Sabrina 1"><img src="Nike/Basketball/Nike Sabrina 1.png" alt="Nike Sabrina 1" class="shoe-img" onclick="toggleCart(this,'Nike Sabrina 1','₱7k – ₱9k','Nike/Basketball/Nike Sabrina 1.png')"><div class="shoe-info"><h3>Nike Sabrina 1</h3><p class="description">Sabrina Ionescu's debut signature shoe built for the fearless point guard. Lightweight, responsive, and designed to match the relentless energy of one of basketball's brightest stars.</p></div><div class="shoe-price">₱7k – ₱9k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+        </div>
+    </div>
+    <div id="nike-running" class="page">
+        <button onclick="goBack()">← Back</button>
+        <h2>Nike – Running</h2>
+        <div class="shoe-list">
+            <div class="shoe-card" id="card-Nike Air Zoom Pegasus 40"><img src="Nike/Running/Nike Air Zoom Pegasus 40.png" alt="Nike Air Zoom Pegasus 40" class="shoe-img" onclick="toggleCart(this,'Nike Air Zoom Pegasus 40','₱7k – ₱9k','Nike/Running/Nike Air Zoom Pegasus 40.png')"><div class="shoe-info"><h3>Nike Air Zoom Pegasus 40</h3><p class="description">The 40th edition of Nike's most trusted everyday trainer. Responsive Zoom Air cushioning and a breathable upper keep you comfortable mile after mile, run after run.</p></div><div class="shoe-price">₱7k – ₱9k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Nike InfinityRN 4"><img src="Nike/Running/Nike InfinityRN 4.png" alt="Nike InfinityRN 4" class="shoe-img" onclick="toggleCart(this,'Nike InfinityRN 4','₱8k – ₱10k','Nike/Running/Nike InfinityRN 4.png')"><div class="shoe-info"><h3>Nike InfinityRN 4</h3><p class="description">Designed for easy-day runs with a rocker-shaped sole that promotes a smooth, natural stride. Plush foam and a secure fit make it ideal for long, comfortable miles.</p></div><div class="shoe-price">₱8k – ₱10k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Nike ZoomX Vaporfly NEXT 3"><img src="Nike/Running/Nike ZoomX Vaporfly NEXT% 3.png" alt="Nike ZoomX Vaporfly NEXT% 3" class="shoe-img" onclick="toggleCart(this,'Nike ZoomX Vaporfly NEXT 3','₱18k – ₱22k','Nike/Running/Nike ZoomX Vaporfly NEXT% 3.png')"><div class="shoe-info"><h3>Nike ZoomX Vaporfly NEXT% 3</h3><p class="description">Nike's fastest racing shoe, worn by world record holders. The ZoomX foam and carbon fiber plate deliver explosive energy return to help serious runners chase their personal bests.</p></div><div class="shoe-price">₱18k – ₱22k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+        </div>
+    </div>
+    <div id="nike-football" class="page">
+        <button onclick="goBack()">← Back</button>
+        <h2>Nike – Football</h2>
+        <div class="shoe-list">
+            <div class="shoe-card" id="card-Nike Mercurial Superfly 9"><img src="Nike/Football/Nike Mercurial Superfly 9.png" alt="Nike Mercurial Superfly 9" class="shoe-img" onclick="toggleCart(this,'Nike Mercurial Superfly 9','₱10k – ₱14k','Nike/Football/Nike Mercurial Superfly 9.png')"><div class="shoe-info"><h3>Nike Mercurial Superfly 9</h3><p class="description">Built for the fastest players on the pitch. The Mercurial Superfly 9 features a sleek Flyknit upper and aggressive stud pattern designed to maximize speed and traction.</p></div><div class="shoe-price">₱10k – ₱14k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Nike Phantom GX 2"><img src="Nike/Football/Nike Phantom GX 2.png" alt="Nike Phantom GX 2" class="shoe-img" onclick="toggleCart(this,'Nike Phantom GX 2','₱9k – ₱13k','Nike/Football/Nike Phantom GX 2.png')"><div class="shoe-info"><h3>Nike Phantom GX 2</h3><p class="description">Engineered for precision passers and playmakers. The Phantom GX 2's textured upper gives you exceptional touch and control to pick apart any defense.</p></div><div class="shoe-price">₱9k – ₱13k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Nike Tiempo Legend 10"><img src="Nike/Football/Nike Tiempo Legend 10.png" alt="Nike Tiempo Legend 10" class="shoe-img" onclick="toggleCart(this,'Nike Tiempo Legend 10','₱9k – ₱12k','Nike/Football/Nike Tiempo Legend 10.png')"><div class="shoe-info"><h3>Nike Tiempo Legend 10</h3><p class="description">The classic leather football boot reimagined for the modern game. Soft kangaroo leather and a refined fit deliver the ultimate touch and comfort for technical players.</p></div><div class="shoe-price">₱9k – ₱12k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+        </div>
+    </div>
+
+    <!-- PUMA PAGES -->
+    <div id="puma-running" class="page">
+        <button onclick="goBack()">← Back</button>
+        <h2>Puma – Running</h2>
+        <div class="shoe-list">
+            <div class="shoe-card" id="card-Puma Deviate Nitro 2"><img src="Puma/Running/Puma Deviate Nitro 2.png" alt="Puma Deviate Nitro 2" class="shoe-img" onclick="toggleCart(this,'Puma Deviate Nitro 2','₱9k – ₱12k','Puma/Running/Puma Deviate Nitro 2.png')"><div class="shoe-info"><h3>Puma Deviate Nitro 2</h3><p class="description">Puma's elite racing shoe with a carbon-infused plate and NITRO foam for explosive energy return. Built for runners chasing faster times on race day.</p></div><div class="shoe-price">₱9k – ₱12k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Puma Magnify Nitro 2"><img src="Puma/Running/Puma Magnify Nitro 2.png" alt="Puma Magnify Nitro 2" class="shoe-img" onclick="toggleCart(this,'Puma Magnify Nitro 2','₱7k – ₱10k','Puma/Running/Puma Magnify Nitro 2.png')"><div class="shoe-info"><h3>Puma Magnify Nitro 2</h3><p class="description">A max-cushion daily trainer packed with NITRO foam for a plush, comfortable ride. Perfect for long runs and recovery days where comfort is the top priority.</p></div><div class="shoe-price">₱7k – ₱10k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Puma Velocity Nitro 3"><img src="Puma/Running/Puma Velocity Nitro 3.png" alt="Puma Velocity Nitro 3" class="shoe-img" onclick="toggleCart(this,'Puma Velocity Nitro 3','₱6k – ₱9k','Puma/Running/Puma Velocity Nitro 3.png')"><div class="shoe-info"><h3>Puma Velocity Nitro 3</h3><p class="description">A versatile everyday runner that balances speed and comfort. NITRO foam and a responsive ride make it a go-to shoe for tempo runs and everyday training sessions.</p></div><div class="shoe-price">₱6k – ₱9k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+        </div>
+    </div>
+    <div id="puma-sneakers" class="page">
+        <button onclick="goBack()">← Back</button>
+        <h2>Puma – Sneakers</h2>
+        <div class="shoe-list">
+            <div class="shoe-card" id="card-Puma Cali"><img src="Puma/Sneaker/Puma Cali.png" alt="Puma Cali" class="shoe-img" onclick="toggleCart(this,'Puma Cali','₱4k – ₱6k','Puma/Sneaker/Puma Cali.png')"><div class="shoe-info"><h3>Puma Cali</h3><p class="description">Inspired by the California spirit, the Cali is a clean and feminine take on Puma's classic court silhouette. Chunky sole, premium leather upper, and effortless everyday style.</p></div><div class="shoe-price">₱4k – ₱6k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Puma Future Rider"><img src="Puma/Sneaker/Puma Future Rider.png" alt="Puma Future Rider" class="shoe-img" onclick="toggleCart(this,'Puma Future Rider','₱4k – ₱6k','Puma/Sneaker/Puma Future Rider.png')"><div class="shoe-info"><h3>Puma Future Rider</h3><p class="description">A retro running-inspired lifestyle sneaker with bold color blocking and a vintage aesthetic. The Future Rider brings old-school Puma energy into the modern streetwear scene.</p></div><div class="shoe-price">₱4k – ₱6k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Puma Suede Classic"><img src="Puma/Sneaker/Puma Suede Classic.png" alt="Puma Suede Classic" class="shoe-img" onclick="toggleCart(this,'Puma Suede Classic','₱4k – ₱7k','Puma/Sneaker/Puma Suede Classic.png')"><div class="shoe-info"><h3>Puma Suede Classic</h3><p class="description">One of the most iconic sneakers in history. The Suede Classic has been a symbol of street culture since 1968, worn by athletes, artists, and icons across generations.</p></div><div class="shoe-price">₱4k – ₱7k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+        </div>
+    </div>
+    <div id="puma-basketball" class="page">
+        <button onclick="goBack()">← Back</button>
+        <h2>Puma – Basketball</h2>
+        <div class="shoe-list">
+            <div class="shoe-card" id="card-Puma All Pro Nitro"><img src="Puma/Basketball/Puma All Pro Nitro.png" alt="Puma All Pro Nitro" class="shoe-img" onclick="toggleCart(this,'Puma All Pro Nitro','₱8k – ₱11k','Puma/Basketball/Puma All Pro Nitro.png')"><div class="shoe-info"><h3>Puma All Pro Nitro</h3><p class="description">Puma's flagship basketball shoe built for all-around court dominance. NITRO foam cushioning delivers explosive responsiveness while the supportive upper keeps you locked in on every play.</p></div><div class="shoe-price">₱8k – ₱11k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Puma Clyde All Pro"><img src="Puma/Basketball/Puma Clyde All Pro.png" alt="Puma Clyde All Pro" class="shoe-img" onclick="toggleCart(this,'Puma Clyde All Pro','₱7k – ₱10k','Puma/Basketball/Puma Clyde All Pro.png')"><div class="shoe-info"><h3>Puma Clyde All Pro</h3><p class="description">Named after Walt "Clyde" Frazier, this performance basketball shoe blends retro heritage with modern tech. Low-profile, fast, and built for guards who play with style.</p></div><div class="shoe-price">₱7k – ₱10k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Puma MB.04"><img src="Puma/Basketball/Puma MB.04.png" alt="Puma MB.04" class="shoe-img" onclick="toggleCart(this,'Puma MB.04','₱9k – ₱12k','Puma/Basketball/Puma MB.04.png')"><div class="shoe-info"><h3>Puma MB.04</h3><p class="description">LaMelo Ball's fourth signature shoe, as bold and flashy as the man himself. Eye-catching colorways and NITRO cushioning make the MB.04 a statement both on and off the court.</p></div><div class="shoe-price">₱9k – ₱12k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+        </div>
+    </div>
+
+    <!-- ADIDAS PAGES -->
+    <div id="adidas-football" class="page">
+        <button onclick="goBack()">← Back</button>
+        <h2>Adidas – Football</h2>
+        <div class="shoe-list">
+            <div class="shoe-card" id="card-Adidas Copa Sense"><img src="Adidas/Football/Adidas Copa Sense.png" alt="Adidas Copa Sense" class="shoe-img" onclick="toggleCart(this,'Adidas Copa Sense','₱8k – ₱12k','Adidas/Football/Adidas Copa Sense.png')"><div class="shoe-info"><h3>Adidas Copa Sense</h3><p class="description">The modern evolution of Adidas' legendary Copa line. Soft kangaroo leather and a sensory foam layer deliver unmatched touch and control for technical players who live for the ball.</p></div><div class="shoe-price">₱8k – ₱12k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Adidas Predator Freak"><img src="Adidas/Football/Adidas Predator Freak.png" alt="Adidas Predator Freak" class="shoe-img" onclick="toggleCart(this,'Adidas Predator Freak','₱10k – ₱14k','Adidas/Football/Adidas Predator Freak.png')"><div class="shoe-info"><h3>Adidas Predator Freak</h3><p class="description">The Predator Freak takes control to the extreme with rubber Demonskin spines that grip the ball for freakish swerve and power. Designed for players who want to dominate every set piece.</p></div><div class="shoe-price">₱10k – ₱14k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Adidas X Speedportal"><img src="Adidas/Football/Adidas X Speedportal.png" alt="Adidas X Speedportal" class="shoe-img" onclick="toggleCart(this,'Adidas X Speedportal','₱10k – ₱13k','Adidas/Football/Adidas X Speedportal.png')"><div class="shoe-info"><h3>Adidas X Speedportal</h3><p class="description">Built for the fastest attackers on the pitch. The X Speedportal's ultra-lightweight Speedskin upper and sprint-frame outsole are engineered to help you reach top speed in the fewest possible steps.</p></div><div class="shoe-price">₱10k – ₱13k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+        </div>
+    </div>
+    <div id="adidas-running" class="page">
+        <button onclick="goBack()">← Back</button>
+        <h2>Adidas – Running</h2>
+        <div class="shoe-list">
+            <div class="shoe-card" id="card-Adidas Adizero Adios Pro 3"><img src="Adidas/Running/Adidas Adizero Adios Pro 3.png" alt="Adidas Adizero Adios Pro 3" class="shoe-img" onclick="toggleCart(this,'Adidas Adizero Adios Pro 3','₱16k – ₱20k','Adidas/Running/Adidas Adizero Adios Pro 3.png')"><div class="shoe-info"><h3>Adidas Adizero Adios Pro 3</h3><p class="description">Adidas' fastest racing shoe, trusted by world record holders. Five carbon rods and Lightstrike Pro foam deliver unmatched propulsion for elite runners chasing podium finishes.</p></div><div class="shoe-price">₱16k – ₱20k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Adidas Solarboost 4"><img src="Adidas/Running/Adidas Solarboost 4.png" alt="Adidas Solarboost 4" class="shoe-img" onclick="toggleCart(this,'Adidas Solarboost 4','₱7k – ₱10k','Adidas/Running/Adidas Solarboost 4.png')"><div class="shoe-info"><h3>Adidas Solarboost 4</h3><p class="description">A premium daily trainer with full-length Boost cushioning and a supportive fit. The Solarboost 4 is built for runners who want comfort and energy return on every long run.</p></div><div class="shoe-price">₱7k – ₱10k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Adidas Ultraboost 23"><img src="Adidas/Running/Adidas Ultraboost 23.png" alt="Adidas Ultraboost 23" class="shoe-img" onclick="toggleCart(this,'Adidas Ultraboost 23','₱8k – ₱12k','Adidas/Running/Adidas Ultraboost 23.png')"><div class="shoe-info"><h3>Adidas Ultraboost 23</h3><p class="description">The legendary Ultraboost returns with even more responsive Boost foam and a refined Primeknit upper. A cult classic that blurs the line between performance running and everyday style.</p></div><div class="shoe-price">₱8k – ₱12k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+        </div>
+    </div>
+    <div id="adidas-basketball" class="page">
+        <button onclick="goBack()">← Back</button>
+        <h2>Adidas – Basketball</h2>
+        <div class="shoe-list">
+            <div class="shoe-card" id="card-Adidas Dame 8"><img src="Adidas/Basketball/Adidas Dame 8.png" alt="Adidas Dame 8" class="shoe-img" onclick="toggleCart(this,'Adidas Dame 8','₱7k – ₱10k','Adidas/Basketball/Adidas Dame 8.png')"><div class="shoe-info"><h3>Adidas Dame 8</h3><p class="description">Damian Lillard's eighth signature shoe, built for the relentless point guard. Responsive Lightstrike cushioning and a low-cut design give you the quickness and explosiveness Dame is known for.</p></div><div class="shoe-price">₱7k – ₱10k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Adidas Harden Vol 6"><img src="Adidas/Basketball/Adidas Harden Vol. 6.png" alt="Adidas Harden Vol. 6" class="shoe-img" onclick="toggleCart(this,'Adidas Harden Vol 6','₱8k – ₱11k','Adidas/Basketball/Adidas Harden Vol. 6.png')"><div class="shoe-info"><h3>Adidas Harden Vol. 6</h3><p class="description">James Harden's sixth signature built for isolation scorers and step-back artists. A wide base, plush cushioning, and herringbone traction pattern give you the perfect platform for Harden's signature moves.</p></div><div class="shoe-price">₱8k – ₱11k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Adidas Pro Boost"><img src="Adidas/Basketball/Adidas Pro Boost.png" alt="Adidas Pro Boost" class="shoe-img" onclick="toggleCart(this,'Adidas Pro Boost','₱7k – ₱10k','Adidas/Basketball/Adidas Pro Boost.png')"><div class="shoe-info"><h3>Adidas Pro Boost</h3><p class="description">A performance basketball shoe powered by full-length Boost cushioning for incredible energy return. Built for versatile players who need comfort and responsiveness through all four quarters.</p></div><div class="shoe-price">₱7k – ₱10k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+        </div>
+    </div>
+
+    <!-- NEW BALANCE PAGES -->
+    <div id="nb-lifestyle" class="page">
+        <button onclick="goBack()">← Back</button>
+        <h2>New Balance – Lifestyle</h2>
+        <div class="shoe-list">
+            <div class="shoe-card" id="card-New Balance 327"><img src="Nb/lifestye/New Balance 327.png" alt="New Balance 327" class="shoe-img" onclick="toggleCart(this,'New Balance 327','₱5k – ₱8k','Nb/lifestye/New Balance 327.png')"><div class="shoe-info"><h3>New Balance 327</h3><p class="description">A retro runner inspired by NB's 1970s racing heritage. The 327's oversized N logo, wavy sole, and bold color palettes have made it one of the most hyped lifestyle sneakers of recent years.</p></div><div class="shoe-price">₱5k – ₱8k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-New Balance 574 Core"><img src="Nb/lifestye/New Balance 574 Core.png" alt="New Balance 574 Core" class="shoe-img" onclick="toggleCart(this,'New Balance 574 Core','₱4k – ₱7k','Nb/lifestye/New Balance 574 Core.png')"><div class="shoe-info"><h3>New Balance 574 Core</h3><p class="description">The quintessential New Balance silhouette. The 574 Core has been a wardrobe staple since 1988 — understated, comfortable, and versatile enough to go with absolutely anything.</p></div><div class="shoe-price">₱4k – ₱7k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-New Balance 990v5"><img src="Nb/lifestye/New Balance 990v5.png" alt="New Balance 990v5" class="shoe-img" onclick="toggleCart(this,'New Balance 990v5','₱12k – ₱16k','Nb/lifestye/New Balance 990v5.png')"><div class="shoe-info"><h3>New Balance 990v5</h3><p class="description">Made in the USA and considered the pinnacle of NB craftsmanship. The 990v5 combines premium suede and mesh with ENCAP cushioning for a shoe that's as comfortable as it is iconic.</p></div><div class="shoe-price">₱12k – ₱16k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+        </div>
+    </div>
+    <div id="nb-running" class="page">
+        <button onclick="goBack()">← Back</button>
+        <h2>New Balance – Running</h2>
+        <div class="shoe-list">
+            <div class="shoe-card" id="card-New Balance Fresh Foam X 1080v12"><img src="Nb/running/New Balance Fresh Foam X 1080v12.png" alt="New Balance Fresh Foam X 1080v12" class="shoe-img" onclick="toggleCart(this,'New Balance Fresh Foam X 1080v12','₱9k – ₱13k','Nb/running/New Balance Fresh Foam X 1080v12.png')"><div class="shoe-info"><h3>New Balance Fresh Foam X 1080v12</h3><p class="description">NB's premier daily trainer with maximum Fresh Foam X cushioning for an ultra-plush ride. The 1080v12 is the go-to shoe for runners who want premium comfort on every easy and long run.</p></div><div class="shoe-price">₱9k – ₱13k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-New Balance FuelCell TC"><img src="Nb/running/New Balance FuelCell TC.png" alt="New Balance FuelCell TC" class="shoe-img" onclick="toggleCart(this,'New Balance FuelCell TC','₱14k – ₱18k','Nb/running/New Balance FuelCell TC.png')"><div class="shoe-info"><h3>New Balance FuelCell TC</h3><p class="description">New Balance's elite carbon-plated racing shoe powered by FuelCell foam. Lightweight and propulsive, the TC is built for runners ready to push their limits on race day.</p></div><div class="shoe-price">₱14k – ₱18k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-New Balance Fresh Foam X More v4"><img src="Nb/running/New Balance Fresh Foam X More v4.png" alt="New Balance Fresh Foam X More v4" class="shoe-img" onclick="toggleCart(this,'New Balance Fresh Foam X More v4','₱8k – ₱11k','Nb/running/New Balance Fresh Foam X More v4.png')"><div class="shoe-info"><h3>New Balance Fresh Foam X More v4</h3><p class="description">A max-cushion recovery shoe with an oversized Fresh Foam X midsole that absorbs impact on every stride. Perfect for easy days and long runs where comfort is everything.</p></div><div class="shoe-price">₱8k – ₱11k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+        </div>
+    </div>
+    <div id="nb-basketball" class="page">
+        <button onclick="goBack()">← Back</button>
+        <h2>New Balance – Basketball</h2>
+        <div class="shoe-list">
+            <div class="shoe-card" id="card-New Balance Kawhi Leonard KAWHI"><img src="Nb/basketball/New Balance Kawhi Leonard KAWHI.png" alt="New Balance Kawhi Leonard KAWHI" class="shoe-img" onclick="toggleCart(this,'New Balance Kawhi Leonard KAWHI','₱9k – ₱13k','Nb/basketball/New Balance Kawhi Leonard KAWHI.png')"><div class="shoe-info"><h3>New Balance Kawhi Leonard KAWHI</h3><p class="description">Kawhi Leonard's signature shoe built for two-way dominance. Engineered for the ultimate competitor — responsive cushioning, superior traction, and a lockdown fit for both ends of the floor.</p></div><div class="shoe-price">₱9k – ₱13k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-New Balance OMN1S"><img src="Nb/basketball/New Balance OMN1S.png" alt="New Balance OMN1S" class="shoe-img" onclick="toggleCart(this,'New Balance OMN1S','₱8k – ₱11k','Nb/basketball/New Balance OMN1S.png')"><div class="shoe-info"><h3>New Balance OMN1S</h3><p class="description">A high-performance basketball shoe built for explosive guards and wings. FuelCell foam and a supportive upper deliver the speed and comfort needed to take over the game.</p></div><div class="shoe-price">₱8k – ₱11k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-New Balance TWO WXY V4"><img src="Nb/basketball/New Balance TWO WXY V4.png" alt="New Balance TWO WXY V4" class="shoe-img" onclick="toggleCart(this,'New Balance TWO WXY V4','₱8k – ₱12k','Nb/basketball/New Balance TWO WXY V4.png')"><div class="shoe-info"><h3>New Balance TWO WXY V4</h3><p class="description">The fourth iteration of New Balance's premier basketball line. Lightweight, responsive, and built for players who rely on quickness and precision to break down defenses.</p></div><div class="shoe-price">₱8k – ₱12k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+        </div>
+    </div>
+    <div id="nb-football" class="page">
+        <button onclick="goBack()">← Back</button>
+        <h2>New Balance – Football</h2>
+        <div class="shoe-list">
+            <div class="shoe-card" id="card-New Balance Audazo Pro"><img src="Nb/foot ball/New Balance Audazo Pro.png" alt="New Balance Audazo Pro" class="shoe-img" onclick="toggleCart(this,'New Balance Audazo Pro','₱7k – ₱10k','Nb/foot ball/New Balance Audazo Pro.png')"><div class="shoe-info"><h3>New Balance Audazo Pro</h3><p class="description">A precision futsal and indoor football shoe built for technical players. The Audazo Pro's gum rubber outsole and snug fit give you elite court grip and exceptional close ball control.</p></div><div class="shoe-price">₱7k – ₱10k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-New Balance Furon V8 Pro"><img src="Nb/foot ball/New Balance Furon V8 Pro.png" alt="New Balance Furon V8 Pro" class="shoe-img" onclick="toggleCart(this,'New Balance Furon V8 Pro','₱9k – ₱13k','Nb/foot ball/New Balance Furon V8 Pro.png')"><div class="shoe-info"><h3>New Balance Furon V8 Pro</h3><p class="description">Built for speed merchants and clinical finishers. The Furon V8 Pro features a low-profile synthetic upper and aggressive stud layout to maximize acceleration and strike power.</p></div><div class="shoe-price">₱9k – ₱13k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-New Balance Tekela V4"><img src="Nb/foot ball/New Balance Tekela V4.png" alt="New Balance Tekela V4" class="shoe-img" onclick="toggleCart(this,'New Balance Tekela V4','₱9k – ₱12k','Nb/foot ball/New Balance Tekela V4.png')"><div class="shoe-info"><h3>New Balance Tekela V4</h3><p class="description">Engineered for playmakers and creative midfielders. The Tekela V4's knitted upper wraps the foot for a second-skin feel, giving you the sensitivity and control to unlock any defense.</p></div><div class="shoe-price">₱9k – ₱12k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+        </div>
+    </div>
+
+    <!-- OTHERS PAGES -->
+    <div id="others-bags" class="page">
+        <button onclick="goBack()">← Back</button>
+        <h2>Bags</h2>
+        <div class="shoe-list">
+            <div class="shoe-card" id="card-Nike Brasilia Training Duffel Bag"><img src="others/Nike Brasilia Training Duffel Bag.png" alt="Nike Brasilia Training Duffel Bag" class="shoe-img" onclick="toggleCart(this,'Nike Brasilia Training Duffel Bag','₱2k – ₱4k','others/Nike Brasilia Training Duffel Bag.png')"><div class="shoe-info"><h3>Nike Brasilia Training Duffel Bag</h3><p class="description">A spacious and durable training bag built for athletes on the go. Multiple compartments keep your gear organized while the ventilated pocket keeps your shoes and dirty clothes separate.</p></div><div class="shoe-price">₱2k – ₱4k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+        </div>
+    </div>
+    <div id="others-socks" class="page">
+        <button onclick="goBack()">← Back</button>
+        <h2>Socks</h2>
+        <div class="shoe-list">
+            <div class="shoe-card" id="card-Adidas Alphaskin Cushioned Crew Socks"><img src="others/Adidas Alphaskin Maximum Cushioned Crew Socks.png" alt="Adidas Alphaskin Maximum Cushioned Crew Socks" class="shoe-img" onclick="toggleCart(this,'Adidas Alphaskin Cushioned Crew Socks','₱300 – ₱500','others/Adidas Alphaskin Maximum Cushioned Crew Socks.png')"><div class="shoe-info"><h3>Adidas Alphaskin Maximum Cushioned Crew Socks</h3><p class="description">High-performance crew socks with maximum cushioning zones for impact protection. The Alphaskin compression fabric wraps your foot snugly to reduce muscle fatigue during intense training.</p></div><div class="shoe-price">₱300 – ₱500</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Nike Dri-FIT Everyday Cushion Crew Socks"><img src="others/Nike Dri-FIT Everyday Cushion Crew Socks.png" alt="Nike Dri-FIT Everyday Cushion Crew Socks" class="shoe-img" onclick="toggleCart(this,'Nike Dri-FIT Everyday Cushion Crew Socks','₱300 – ₱500','others/Nike Dri-FIT Everyday Cushion Crew Socks.png')"><div class="shoe-info"><h3>Nike Dri-FIT Everyday Cushion Crew Socks</h3><p class="description">Nike's everyday essential with Dri-FIT technology that wicks sweat to keep your feet dry and comfortable. Cushioned footbed and arch support make these the perfect all-day wear socks.</p></div><div class="shoe-price">₱300 – ₱500</div><div class="cart-add-hint">Click image to add to cart</div></div>
+        </div>
+    </div>
+    <div id="others-headwear" class="page">
+        <button onclick="goBack()">← Back</button>
+        <h2>Headwear</h2>
+        <div class="shoe-list">
+            <div class="shoe-card" id="card-Adidas Performance Baseball Cap"><img src="others/Adidas Performance Baseball Cap.png" alt="Adidas Performance Baseball Cap" class="shoe-img" onclick="toggleCart(this,'Adidas Performance Baseball Cap','₱800 – ₱1.2k','others/Adidas Performance Baseball Cap.png')"><div class="shoe-info"><h3>Adidas Performance Baseball Cap</h3><p class="description">A lightweight and breathable cap built for athletes. Moisture-absorbing sweatband and a structured brim keep you cool and shielded from the sun during training and outdoor activities.</p></div><div class="shoe-price">₱800 – ₱1.2k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+            <div class="shoe-card" id="card-Nike Aerobill Tailwind Cap"><img src="others/Nike Aerobill Tailwind Cap.png" alt="Nike Aerobill Tailwind Cap" class="shoe-img" onclick="toggleCart(this,'Nike Aerobill Tailwind Cap','₱900 – ₱1.5k','others/Nike Aerobill Tailwind Cap.png')"><div class="shoe-info"><h3>Nike Aerobill Tailwind Cap</h3><p class="description">Nike's most aerodynamic running cap featuring AeroBill technology with mesh ventilation panels. Ultra-lightweight and sweat-wicking, designed to stay out of your way while you chase your best performance.</p></div><div class="shoe-price">₱900 – ₱1.5k</div><div class="cart-add-hint">Click image to add to cart</div></div>
+        </div>
+    </div>
+
+</main>
+<div id="home-honarable" class="honorable-mention">
+  <span class="hm-emoji-left">📣</span>
+  <span class="hm-text">Honorable Mention</span>
+  <span class="hm-emoji-right">🔥🔥🔥</span>
+</div>
+<!-- CAROUSEL -->
+<div id="home-carousel" class="carousel-wrapper">
+    <button class="carousel-btn left" onclick="slideCarousel(-1)">&#8592;</button>
+    <div class="carousel-track-container">
+        <div class="carousel-track" id="carousel-track">
+            <div class="carousel-slide">
+                <img src="banner1.jpg" alt="Banner 1">
+                <div class="slide-label">5 KINGS</div>
+            </div>
+            <div class="carousel-slide">
+                <img src="banner2.jpg" alt="Banner 2">
+                <div class="slide-label">5 KINGS</div>
+            </div>
+            <div class="carousel-slide">
+                <img src="banner3.jpg" alt="Banner 3">
+                <div class="slide-label">5 KINGS</div>
+            </div>
+            <div class="carousel-slide">
+                <img src="banner4.jpg" alt="Banner 4">
+                <div class="slide-label">5 KINGS</div>
+            </div>
+            <div class="carousel-slide">
+                <img src="banner5.jpg" alt="Banner 5">
+                <div class="slide-label">5 KINGS</div>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-btn right" onclick="slideCarousel(1)">&#8594;</button>
+    <div class="carousel-dots" id="carousel-dots"></div>
+</div>
+
+<!-- BRAND CAROUSELS -->
+<div class="brand-carousels-section">
+
+  <!-- NIKE -->
+  <div class="brand-carousel-block">
+    <div class="brand-carousel-header">
+      <img src="nike.jpg" alt="NIKE" class="brand-header-logo">
+      <span>NIKE</span>
+    </div>
+    <div class="brand-carousel-wrapper">
+      <button class="brand-btn left" onclick="slideBrand('nike',-1)">&#8592;</button>
+      <div class="brand-track-container">
+        <div class="brand-track" id="brand-track-nike">
+          <div class="brand-slide" onclick="showPage('nike-jordan')"><img src="Nike/Jordan/Air Jordan 1 Retro High OG.png"><div class="brand-slide-label">Air Jordan 1 Retro High OG</div></div>
+          <div class="brand-slide" onclick="showPage('nike-jordan')"><img src="Nike/Jordan/Air Jordan 11 Retro.png"><div class="brand-slide-label">Air Jordan 11 Retro</div></div>
+          <div class="brand-slide" onclick="showPage('nike-jordan')"><img src="Nike/Jordan/Air Jordan 4 Retro.png"><div class="brand-slide-label">Air Jordan 4 Retro</div></div>
+          <div class="brand-slide" onclick="showPage('nike-lifestyle')"><img src="Nike/Lifestyle/Nike Air Force 1 Low.png"><div class="brand-slide-label">Nike Air Force 1 Low</div></div>
+          <div class="brand-slide" onclick="showPage('nike-lifestyle')"><img src="Nike/Lifestyle/Nike Air Max 90.png"><div class="brand-slide-label">Nike Air Max 90</div></div>
+          <div class="brand-slide" onclick="showPage('nike-lifestyle')"><img src="Nike/Lifestyle/Nike Dunk Low.png"><div class="brand-slide-label">Nike Dunk Low</div></div>
+          <div class="brand-slide" onclick="showPage('nike-basketball')"><img src="Nike/Basketball/LeBron 21.png"><div class="brand-slide-label">LeBron 21</div></div>
+          <div class="brand-slide" onclick="showPage('nike-basketball')"><img src="Nike/Basketball/Nike KD 16.png"><div class="brand-slide-label">Nike KD 16</div></div>
+          <div class="brand-slide" onclick="showPage('nike-basketball')"><img src="Nike/Basketball/Nike Sabrina 1.png"><div class="brand-slide-label">Nike Sabrina 1</div></div>
+          <div class="brand-slide" onclick="showPage('nike-running')"><img src="Nike/Running/Nike Air Zoom Pegasus 40.png"><div class="brand-slide-label">Air Zoom Pegasus 40</div></div>
+          <div class="brand-slide" onclick="showPage('nike-running')"><img src="Nike/Running/Nike InfinityRN 4.png"><div class="brand-slide-label">Nike InfinityRN 4</div></div>
+          <div class="brand-slide" onclick="showPage('nike-running')"><img src="Nike/Running/Nike ZoomX Vaporfly NEXT% 3.png"><div class="brand-slide-label">ZoomX Vaporfly NEXT% 3</div></div>
+          <div class="brand-slide" onclick="showPage('nike-football')"><img src="Nike/Football/Nike Mercurial Superfly 9.png"><div class="brand-slide-label">Mercurial Superfly 9</div></div>
+          <div class="brand-slide" onclick="showPage('nike-football')"><img src="Nike/Football/Nike Phantom GX 2.png"><div class="brand-slide-label">Nike Phantom GX 2</div></div>
+          <div class="brand-slide" onclick="showPage('nike-football')"><img src="Nike/Football/Nike Tiempo Legend 10.png"><div class="brand-slide-label">Nike Tiempo Legend 10</div></div>
+        </div>
+      </div>
+      <button class="brand-btn right" onclick="slideBrand('nike',1)">&#8594;</button>
+    </div>
+  </div>
+
+  <!-- PUMA -->
+  <div class="brand-carousel-block">
+    <div class="brand-carousel-header">
+      <img src="puma.jpg" alt="PUMA" class="brand-header-logo">
+      <span>PUMA</span>
+    </div>
+    <div class="brand-carousel-wrapper">
+      <button class="brand-btn left" onclick="slideBrand('puma',-1)">&#8592;</button>
+      <div class="brand-track-container">
+        <div class="brand-track" id="brand-track-puma">
+          <div class="brand-slide" onclick="showPage('puma-running')"><img src="Puma/Running/Puma Deviate Nitro 2.png"><div class="brand-slide-label">Puma Deviate Nitro 2</div></div>
+          <div class="brand-slide" onclick="showPage('puma-running')"><img src="Puma/Running/Puma Magnify Nitro 2.png"><div class="brand-slide-label">Puma Magnify Nitro 2</div></div>
+          <div class="brand-slide" onclick="showPage('puma-running')"><img src="Puma/Running/Puma Velocity Nitro 3.png"><div class="brand-slide-label">Puma Velocity Nitro 3</div></div>
+          <div class="brand-slide" onclick="showPage('puma-sneakers')"><img src="Puma/Sneaker/Puma Cali.png"><div class="brand-slide-label">Puma Cali</div></div>
+          <div class="brand-slide" onclick="showPage('puma-sneakers')"><img src="Puma/Sneaker/Puma Future Rider.png"><div class="brand-slide-label">Puma Future Rider</div></div>
+          <div class="brand-slide" onclick="showPage('puma-sneakers')"><img src="Puma/Sneaker/Puma Suede Classic.png"><div class="brand-slide-label">Puma Suede Classic</div></div>
+          <div class="brand-slide" onclick="showPage('puma-basketball')"><img src="Puma/Basketball/Puma All Pro Nitro.png"><div class="brand-slide-label">Puma All Pro Nitro</div></div>
+          <div class="brand-slide" onclick="showPage('puma-basketball')"><img src="Puma/Basketball/Puma Clyde All Pro.png"><div class="brand-slide-label">Puma Clyde All Pro</div></div>
+          <div class="brand-slide" onclick="showPage('puma-basketball')"><img src="Puma/Basketball/Puma MB.04.png"><div class="brand-slide-label">Puma MB.04</div></div>
+        </div>
+      </div>
+      <button class="brand-btn right" onclick="slideBrand('puma',1)">&#8594;</button>
+    </div>
+  </div>
+
+  <!-- ADIDAS -->
+  <div class="brand-carousel-block">
+    <div class="brand-carousel-header">
+      <img src="adidas.jpg" alt="ADIDAS" class="brand-header-logo">
+      <span>ADIDAS</span>
+    </div>
+    <div class="brand-carousel-wrapper">
+      <button class="brand-btn left" onclick="slideBrand('adidas',-1)">&#8592;</button>
+      <div class="brand-track-container">
+        <div class="brand-track" id="brand-track-adidas">
+          <div class="brand-slide" onclick="showPage('adidas-football')"><img src="Adidas/Football/Adidas Copa Sense.png"><div class="brand-slide-label">Adidas Copa Sense</div></div>
+          <div class="brand-slide" onclick="showPage('adidas-football')"><img src="Adidas/Football/Adidas Predator Freak.png"><div class="brand-slide-label">Adidas Predator Freak</div></div>
+          <div class="brand-slide" onclick="showPage('adidas-football')"><img src="Adidas/Football/Adidas X Speedportal.png"><div class="brand-slide-label">Adidas X Speedportal</div></div>
+          <div class="brand-slide" onclick="showPage('adidas-running')"><img src="Adidas/Running/Adidas Adizero Adios Pro 3.png"><div class="brand-slide-label">Adizero Adios Pro 3</div></div>
+          <div class="brand-slide" onclick="showPage('adidas-running')"><img src="Adidas/Running/Adidas Solarboost 4.png"><div class="brand-slide-label">Adidas Solarboost 4</div></div>
+          <div class="brand-slide" onclick="showPage('adidas-running')"><img src="Adidas/Running/Adidas Ultraboost 23.png"><div class="brand-slide-label">Adidas Ultraboost 23</div></div>
+          <div class="brand-slide" onclick="showPage('adidas-basketball')"><img src="Adidas/Basketball/Adidas Dame 8.png"><div class="brand-slide-label">Adidas Dame 8</div></div>
+          <div class="brand-slide" onclick="showPage('adidas-basketball')"><img src="Adidas/Basketball/Adidas Harden Vol. 6.png"><div class="brand-slide-label">Adidas Harden Vol. 6</div></div>
+          <div class="brand-slide" onclick="showPage('adidas-basketball')"><img src="Adidas/Basketball/Adidas Pro Boost.png"><div class="brand-slide-label">Adidas Pro Boost</div></div>
+        </div>
+      </div>
+      <button class="brand-btn right" onclick="slideBrand('adidas',1)">&#8594;</button>
+    </div>
+  </div>
+
+  <!-- NEW BALANCE -->
+  <div class="brand-carousel-block">
+    <div class="brand-carousel-header">
+      <img src="nb.jpg" alt="NEW BALANCE" class="brand-header-logo">
+      <span>NEW BALANCE</span>
+    </div>
+    <div class="brand-carousel-wrapper">
+      <button class="brand-btn left" onclick="slideBrand('nb',-1)">&#8592;</button>
+      <div class="brand-track-container">
+        <div class="brand-track" id="brand-track-nb">
+          <div class="brand-slide" onclick="showPage('nb-lifestyle')"><img src="Nb/lifestye/New Balance 327.png"><div class="brand-slide-label">New Balance 327</div></div>
+          <div class="brand-slide" onclick="showPage('nb-lifestyle')"><img src="Nb/lifestye/New Balance 574 Core.png"><div class="brand-slide-label">New Balance 574 Core</div></div>
+          <div class="brand-slide" onclick="showPage('nb-lifestyle')"><img src="Nb/lifestye/New Balance 990v5.png"><div class="brand-slide-label">New Balance 990v5</div></div>
+          <div class="brand-slide" onclick="showPage('nb-running')"><img src="Nb/running/New Balance Fresh Foam X 1080v12.png"><div class="brand-slide-label">Fresh Foam X 1080v12</div></div>
+          <div class="brand-slide" onclick="showPage('nb-running')"><img src="Nb/running/New Balance FuelCell TC.png"><div class="brand-slide-label">FuelCell TC</div></div>
+          <div class="brand-slide" onclick="showPage('nb-running')"><img src="Nb/running/New Balance Fresh Foam X More v4.png"><div class="brand-slide-label">Fresh Foam X More v4</div></div>
+          <div class="brand-slide" onclick="showPage('nb-basketball')"><img src="Nb/basketball/New Balance Kawhi Leonard KAWHI.png"><div class="brand-slide-label">Kawhi Leonard KAWHI</div></div>
+          <div class="brand-slide" onclick="showPage('nb-basketball')"><img src="Nb/basketball/New Balance OMN1S.png"><div class="brand-slide-label">New Balance OMN1S</div></div>
+          <div class="brand-slide" onclick="showPage('nb-basketball')"><img src="Nb/basketball/New Balance TWO WXY V4.png"><div class="brand-slide-label">TWO WXY V4</div></div>
+          <div class="brand-slide" onclick="showPage('nb-football')"><img src="Nb/foot ball/New Balance Audazo Pro.png"><div class="brand-slide-label">Audazo Pro</div></div>
+          <div class="brand-slide" onclick="showPage('nb-football')"><img src="Nb/foot ball/New Balance Furon V8 Pro.png"><div class="brand-slide-label">Furon V8 Pro</div></div>
+          <div class="brand-slide" onclick="showPage('nb-football')"><img src="Nb/foot ball/New Balance Tekela V4.png"><div class="brand-slide-label">Tekela V4</div></div>
+        </div>
+      </div>
+      <button class="brand-btn right" onclick="slideBrand('nb',1)">&#8594;</button>
+    </div>
+  </div>
+
+  <!-- OTHERS -->
+  <div class="brand-carousel-block">
+    <div class="brand-carousel-header">
+      <span style="font-size:2rem;">🎒</span>
+      <span>OTHERS</span>
+    </div>
+    <div class="brand-carousel-wrapper">
+      <button class="brand-btn left" onclick="slideBrand('others',-1)">&#8592;</button>
+      <div class="brand-track-container">
+        <div class="brand-track" id="brand-track-others">
+          <div class="brand-slide" onclick="showPage('others-bags')"><img src="others/Nike Brasilia Training Duffel Bag.png"><div class="brand-slide-label">Nike Brasilia Duffel Bag</div></div>
+          <div class="brand-slide" onclick="showPage('others-socks')"><img src="others/Adidas Alphaskin Maximum Cushioned Crew Socks.png"><div class="brand-slide-label">Adidas Alphaskin Socks</div></div>
+          <div class="brand-slide" onclick="showPage('others-socks')"><img src="others/Nike Dri-FIT Everyday Cushion Crew Socks.png"><div class="brand-slide-label">Nike Dri-FIT Socks</div></div>
+          <div class="brand-slide" onclick="showPage('others-headwear')"><img src="others/Adidas Performance Baseball Cap.png"><div class="brand-slide-label">Adidas Baseball Cap</div></div>
+          <div class="brand-slide" onclick="showPage('others-headwear')"><img src="others/Nike Aerobill Tailwind Cap.png"><div class="brand-slide-label">Nike Aerobill Cap</div></div>
+        </div>
+      </div>
+      <button class="brand-btn right" onclick="slideBrand('others',1)">&#8594;</button>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- CART MODAL -->
+<div id="cart-modal" class="modal-overlay" style="display:none;" onclick="if(event.target===this)closeCart()">
+    <div class="modal-box cart-modal-box">
+        <div class="cart-modal-header">
+            <h2>🛒 Your Cart</h2>
+            <button onclick="closeCart()" class="close-btn">✕</button>
+        </div>
+        <div id="cart-items-list"></div>
+        <div class="cart-total-row">
+            <span>Total:</span>
+            <span id="cart-total-display" class="cart-total-amount">—</span>
+        </div>
+        <div class="cart-note">* Prices shown are estimated ranges. Final price determined at checkout.</div>
+        <button class="confirm-btn cart-confirm-btn" onclick="confirmCart()">Confirm Order</button>
+    </div>
+</div>
+
+<!-- ABOUT MODAL -->
+<div id="about-modal" class="modal-overlay" style="display:none;" onclick="if(event.target===this)closeModal('about-modal')">
+    <div class="modal-box">
+        <button onclick="closeModal('about-modal')" class="close-btn" style="align-self:flex-end;">✕</button>
+        <h2>About Us</h2>
+        <p class="terms-text">SAKS is your go-to destination for authentic sneakers and sportswear from the world's top brands — Nike, Jordan, Adidas, Puma, and New Balance. We are passionate about helping you find the right pair, whether you're hitting the court, the track, or the street.</p>
+        <p class="terms-text">All pricing is based on real market data. Our goal is to inform, not to sell.</p>
+    </div>
+</div>
+
+<!-- CONTACT MODAL -->
+<footer class="site-footer">
+    <h3>About Us</h3>
+    <p>SAKS is your go-to destination for authentic sneakers and sportswear from the world's top brands — Nike, Jordan, Adidas, Puma, and New Balance. We are passionate about helping you find the right pair, whether you're hitting the court, the track, or the street.</p>
+    <p>All pricing is based on real market data. Our goal is to inform, not to sell.</p>
+
+    <h3>Contact Us</h3>
+    <p>Have questions or feedback? Reach us through any of the channels below.</p>
+    <div class="footer-links">
+        <span>📧 saks@email.com</span>
+        <span>📱 @saks.ph</span>
+        <span>📍 Manila, Philippines</span>
+    </div>
+</footer>
+
+<!-- NICKNAME SLIDE -->
+<div id="nickname-slide" class="slide-section" style="display:none;">
+    <div class="slide-box">
+        <div class="modal-logo">
+            <img src="jordan.png" alt="logo">
+            <span>SAKS</span>
+            <img src="jordan.png" alt="logo">
+        </div>
+        <h2>What should we call you?</h2>
+        <input type="text" id="nickname-input" placeholder="Enter your nickname..." maxlength="20">
+        <button class="confirm-btn" onclick="confirmNickname()">Confirm</button>
+    </div>
+</div>
+
+<!-- TERMS SLIDE -->
+<div id="terms-slide" class="slide-section" style="display:none;">
+    <div class="slide-box">
+        <div class="modal-logo">
+            <img src="jordan.png" alt="logo">
+            <span>SAKS</span>
+            <img src="jordan.png" alt="logo">
+        </div>
+        <h2>Terms & Conditions</h2>
+        <p class="terms-text" style="font-size:14px;">Please be reminded that all the following information is based on actual market data and not on preconceptions. All details are determined by how reliable and credible the actual products are. This presentation is for informational purposes only, and we are not here to sell or promote any products.</p>
+        <label class="terms-check">
+            <input type="checkbox" id="terms-checkbox">
+            <span>I have read and agreed to the terms of condition</span>
+        </label>
+        <button class="confirm-btn" onclick="confirmTerms()">Confirm</button>
+    </div>
+</div>
+
+</div><!-- end site-wrapper -->
+
+</body>
+</html>
