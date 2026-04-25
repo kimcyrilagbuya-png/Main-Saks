@@ -911,7 +911,7 @@ button:hover { background: #ddd; }
 }
 #order-toast {
     position: fixed;
-    bottom: -200px;
+    bottom: -150px;
     right: 50px;
     background: #1a1a1a;
     border: 1px solid rgba(255,255,255,0.2);
