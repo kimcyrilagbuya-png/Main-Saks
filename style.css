@@ -926,7 +926,7 @@ button:hover { background: #ddd; }
     z-index: 9999;
     box-shadow: 0 8px 32px rgba(0,0,0,0.5);
     transition: bottom 0.4s ease;
-    min-width: 380px;
+    min-width: 70px;
 }
 
 #order-toast.show {
