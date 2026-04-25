@@ -917,7 +917,7 @@ button:hover { background: #ddd; }
     border: 1px solid rgba(255,255,255,0.2);
     border-left: 4px solid #ffe066;
     color: #fff;
-    padding: 45px 35px;
+    padding: 15px 25px;
     border-radius: 45px;
     display: flex;
     align-items: center;
